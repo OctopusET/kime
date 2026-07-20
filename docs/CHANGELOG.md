@@ -9,6 +9,7 @@
 * Remove unused deps (bindgen, parking_lot, libc), move enumset serde feature to the hangul crate that needs it
 * Update deps: enum-map 3, strum 0.28, nix 0.31, itertools 0.15, quick-xml 0.41, imageproc 0.27, egui/eframe 0.35
 * Update CI actions to latest majors, pin crate-ci/typos to a release tag
+* Replace archived serde_yaml with serde_norway (maintained fork, RUSTSEC-2025-0068 recommendation)
 
 ## 3.2.0
 

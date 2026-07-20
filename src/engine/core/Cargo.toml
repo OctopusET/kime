@@ -13,7 +13,7 @@ kime-engine-backend-hanja = { path = "../backends/hanja", optional = true }
 kime-engine-backend-latin = { path = "../backends/latin" }
 kime-engine-backend-math = { path = "../backends/math", optional = true }
 kime-engine-backend-emoji = { path = "../backends/emoji", optional = true }
-serde_yaml = "0.9"
+serde_norway = "0.9"
 fontdb = { version = "0.23", features = ["fontconfig"] }
 
 [target.'cfg(unix)'.dependencies]

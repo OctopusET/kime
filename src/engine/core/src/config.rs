@@ -44,7 +44,7 @@ impl Config {
             .as_ref()
             .and_then(|f| fs::read_to_string(f.as_path()).ok())
             .as_ref()
-            .and_then(|content| serde_yaml::from_str(content).ok());
+            .and_then(|content| serde_norway::from_str(content).ok());
 
         #[cfg(not(unix))]
         let translation_layer = None;
@@ -111,7 +111,7 @@ pub fn load_raw_config_from_config_dir() -> RawConfig {
     let dir = xdg::BaseDirectories::with_prefix("kime");
 
     dir.find_config_file("config.yaml")
-        .and_then(|config| serde_yaml::from_reader(std::fs::File::open(config).ok()?).ok())
+        .and_then(|config| serde_norway::from_reader(std::fs::File::open(config).ok()?).ok())
         .unwrap_or_default()
 }
 
@@ -120,7 +120,7 @@ pub fn load_engine_config_from_config_dir() -> Option<Config> {
     let dir = xdg::BaseDirectories::with_prefix("kime");
     let config: RawConfig = dir
         .find_config_file("config.yaml")
-        .and_then(|config| serde_yaml::from_reader(std::fs::File::open(config).ok()?).ok())
+        .and_then(|config| serde_norway::from_reader(std::fs::File::open(config).ok()?).ok())
         .unwrap_or_default();
 
     Some(Config::from_engine_config_with_dir(config.engine, &dir))

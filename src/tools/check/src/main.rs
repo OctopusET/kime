@@ -116,7 +116,7 @@ impl Check {
 
                 println!("Loading config path: {}", config_path.display());
 
-                let config: kime_engine_core::RawConfig = match serde_yaml::from_str(
+                let config: kime_engine_core::RawConfig = match serde_norway::from_str(
                     &std::fs::read_to_string(config_path).expect("Read config file"),
                 ) {
                     Ok(config) => config,
@@ -134,7 +134,7 @@ impl Check {
                         };
                         println!("Loading translation layer config: {}", path.display());
 
-                        let _translation_layer: KeyMap<Key> = match serde_yaml::from_str(
+                        let _translation_layer: KeyMap<Key> = match serde_norway::from_str(
                             &std::fs::read_to_string(path.as_path())
                                 .expect("Read translation layer config"),
                         ) {

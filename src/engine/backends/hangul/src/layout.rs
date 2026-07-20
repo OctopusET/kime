@@ -24,8 +24,8 @@ impl Layout {
         Self { keymap }
     }
 
-    pub fn load_from(content: &str) -> Result<Self, serde_yaml::Error> {
-        Ok(Self::from_items(serde_yaml::from_str(content)?))
+    pub fn load_from(content: &str) -> Result<Self, serde_norway::Error> {
+        Ok(Self::from_items(serde_norway::from_str(content)?))
     }
 
     #[inline]

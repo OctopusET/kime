@@ -74,7 +74,7 @@ fn load_layout(config: &LatinConfig) -> KeyMap<char> {
         LatinLayout::Dvorak => include_str!("../data/dvorak.yaml"),
         LatinLayout::Colemak => include_str!("../data/colemak.yaml"),
     };
-    serde_yaml::from_str(layout).unwrap_or_default()
+    serde_norway::from_str(layout).unwrap_or_default()
 }
 
 #[derive(Clone)]

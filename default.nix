@@ -30,7 +30,7 @@ llvmPackages_18.stdenv.mkDerivation {
   version = kimeVersion;
   cargoDeps = rustPlatform.fetchCargoVendor {
     inherit src;
-    hash = "sha256-ZgWHzXixTZWg7+2nXbw2NjeWD/cskGoZ/VSrM7vCwFs=";
+    hash = "sha256-P/zuoJ6R8fOzm/9QbeHqwYnQWkro5rw/0AnLqFuW07M=";
   };
   LIBCLANG_PATH = "${llvmPackages_18.libclang.lib}/lib";
   dontWrapQtApps = true;

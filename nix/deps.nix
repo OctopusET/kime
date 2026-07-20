@@ -4,7 +4,7 @@
     dbus
     libdbusmenu
 
-    xorg.libxcb
+    libxcb
     libGL
     wayland
     libxkbcommon

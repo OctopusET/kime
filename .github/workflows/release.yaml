@@ -12,8 +12,8 @@ jobs:
   build-archive:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: cachix/install-nix-action@v18
+      - uses: actions/checkout@v7
+      - uses: cachix/install-nix-action@v31
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -34,7 +34,7 @@ jobs:
           done
 
       - name: Upload engine artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: engine
           path: |
@@ -50,7 +50,7 @@ jobs:
           tar -C kime-install -caf kime-${{ github.ref_name }}.tar.zst .
 
       - name: Upload release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           draft: true
           files: kime-${{ github.ref_name }}.tar.zst
@@ -62,10 +62,10 @@ jobs:
       matrix:
         qt5: ['5.12.8', '5.15.2']
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Download engine
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: engine
           path: ./engine-artifacts
@@ -94,7 +94,7 @@ jobs:
           cp build/src/frontends/qt5/libkimeplatforminputcontextplugin.so libkime-qt-${{ matrix.qt5 }}.so
 
       - name: Upload release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           draft: true
           files: libkime-qt-${{ matrix.qt5 }}.so
@@ -106,10 +106,10 @@ jobs:
       matrix:
         qt6: ['6.2.4', '6.5.3', '6.7.3', '6.8.2', '6.9.3', '6.10.3']
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Download engine
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: engine
           path: ./engine-artifacts
@@ -138,7 +138,7 @@ jobs:
           cp build/src/frontends/qt6/libkimeplatforminputcontextplugin.so libkime-qt-${{ matrix.qt6 }}.so
 
       - name: Upload release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           draft: true
           files: libkime-qt-${{ matrix.qt6 }}.so
@@ -201,7 +201,7 @@ jobs:
           export PATH="$HOME/.cargo/bin:$PATH"
           rustup default stable
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Build
         run: |
@@ -229,7 +229,7 @@ jobs:
           mv output/kime_*_${ARCH}.deb "output/kime-${{ github.ref_name }}_${ARCH}_${{ matrix.suffix }}.deb"
 
       - name: Upload release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           draft: true
           files: output/kime-*.deb

@@ -17,20 +17,20 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: cachix/install-nix-action@v18
+      - uses: actions/checkout@v7
+      - uses: cachix/install-nix-action@v31
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Caching cargo
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: ${{ runner.os }}-nix-rustc-v1-1.55.0-${{ hashFiles('Cargo.lock') }}
+          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
           restore-keys: |
-            ${{ runner.os }}-nix-rustc-v1-1.55.0-
+            ${{ runner.os }}-cargo-
       - run: nix develop -c meson setup build --buildtype=debug -Dcargo_profile=debug
       - run: nix develop -c ninja -C build
       - run: nix develop -c cargo test
@@ -43,14 +43,14 @@ jobs:
           - bans licenses sources
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: EmbarkStudios/cargo-deny-action@v2
 
   format:
     runs-on: ubuntu-24.04
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Install Rustfmt
         run: rustup component add rustfmt
       - name: Check Rustfmt
@@ -59,5 +59,5 @@ jobs:
   spell-check:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: crate-ci/typos@master
+      - uses: actions/checkout@v7
+      - uses: crate-ci/typos@v1.48.0

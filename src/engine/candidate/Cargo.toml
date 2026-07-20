@@ -9,4 +9,4 @@ license = "GPL-3.0-or-later"
 kime-engine-dict = { path = "../dict" }
 
 [dependencies]
-nix = { version = "0.30", features = ["poll"] }
+nix = { version = "0.31", features = ["poll"] }

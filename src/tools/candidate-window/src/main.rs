@@ -23,7 +23,8 @@ struct CandidateApp {
 }
 
 impl eframe::App for CandidateApp {
-    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+    fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
+        let ctx = ui.ctx().clone();
         if ctx.input(|i| i.key_down(egui::Key::Escape)) || ctx.input(|i| i.key_down(egui::Key::Q)) {
             ctx.send_viewport_cmd(egui::ViewportCommand::Close);
             return;
@@ -78,7 +79,25 @@ impl eframe::App for CandidateApp {
             self.key_state.right = false;
         }
 
-        egui::CentralPanel::default().show(ctx, |ui| {
+        egui::Panel::bottom("candidate-footer").show(ui, |ui| {
+            ui.horizontal(|ui| {
+                for i in 0..self.max_page_index + 1 {
+                    if i == self.page_index {
+                        egui::Button::new(
+                            egui::RichText::new(format!("[{}]", i + 1))
+                                .color(egui::Color32::YELLOW),
+                        )
+                        .ui(ui);
+                    } else {
+                        if ui.button(format!("{}", i + 1)).clicked() {
+                            self.page_index = i;
+                        }
+                    };
+                }
+            });
+        });
+
+        egui::CentralPanel::default().show(ui, |ui| {
             ui.vertical_centered(|ui| {
                 let from = self.page_index * PAGE_SIZE;
                 let to = (from + PAGE_SIZE).min(self.candidate_list.len());
@@ -101,24 +120,6 @@ impl eframe::App for CandidateApp {
                         ctx.send_viewport_cmd(egui::ViewportCommand::Close);
                         return;
                     }
-                }
-            });
-        });
-
-        egui::TopBottomPanel::bottom("candidate-footer").show(ctx, |ui| {
-            ui.horizontal(|ui| {
-                for i in 0..self.max_page_index + 1 {
-                    if i == self.page_index {
-                        egui::Button::new(
-                            egui::RichText::new(format!("[{}]", i + 1))
-                                .color(egui::Color32::YELLOW),
-                        )
-                        .ui(ui);
-                    } else {
-                        if ui.button(format!("{}", i + 1)).clicked() {
-                            self.page_index = i;
-                        }
-                    };
                 }
             });
         });

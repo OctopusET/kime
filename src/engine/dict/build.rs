@@ -121,7 +121,7 @@ fn load_hanja_dict() -> Dict {
 }
 
 fn load_unicode_annotations() -> quick_xml::Result<Vec<UnicodeEntry>> {
-    use quick_xml::{events::Event, Reader};
+    use quick_xml::{events::Event, Reader, XmlVersion};
 
     let mut out = Vec::with_capacity(512);
     let mut current_entry = UnicodeEntry::default();
@@ -133,7 +133,7 @@ fn load_unicode_annotations() -> quick_xml::Result<Vec<UnicodeEntry>> {
             Event::Start(start) if start.name().0 == b"annotation" => {
                 let cp = start.attributes().next().unwrap()?;
                 debug_assert_eq!(cp.key.0, b"cp");
-                let cp = cp.decode_and_unescape_value(reader.decoder())?;
+                let cp = cp.decoded_and_normalized_value(XmlVersion::Implicit1_0, reader.decoder())?;
                 if current_entry.cp != cp {
                     if !current_entry.cp.is_empty() {
                         out.push(mem::take(&mut current_entry));
@@ -141,9 +141,10 @@ fn load_unicode_annotations() -> quick_xml::Result<Vec<UnicodeEntry>> {
 
                     current_entry.cp = cp.into_owned();
                     current_entry.description =
-                        reader.read_text(start.to_end().name())?.into_owned();
+                        reader.read_text(start.to_end().name())?.decode()?.into_owned();
                 } else {
-                    current_entry.tts = reader.read_text(start.to_end().name())?.into_owned();
+                    current_entry.tts =
+                        reader.read_text(start.to_end().name())?.decode()?.into_owned();
                 }
             }
             Event::Eof => break,

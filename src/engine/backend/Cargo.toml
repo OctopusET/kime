@@ -7,6 +7,6 @@ license = "GPL-3.0-or-later"
 
 [dependencies]
 bitflags = "2.10"
-enum-map = "2"
+enum-map = "3"
 serde = { version = "1", features = ["derive"] }
-strum = { version = "0.27", features = ["derive"] }
+strum = { version = "0.28", features = ["derive"] }

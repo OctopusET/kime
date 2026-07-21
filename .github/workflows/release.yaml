@@ -11,17 +11,37 @@ permissions:
 jobs:
   build-archive:
     runs-on: ubuntu-24.04
+    # plain distro container so binaries link against a portable glibc
+    # (nix develop produced /nix/store interpreter paths, broken elsewhere);
+    # ubuntu 22.04 is the oldest glibc in the support matrix
+    container: ubuntu:22.04
     steps:
+      - name: Install dependencies
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          apt-get update
+          # meson via pip below: ubuntu 22.04 ships 0.61, project needs >=1.1
+          apt-get install -y build-essential curl git pkg-config libclang-dev \
+            ninja-build python3 python3-venv zstd libgtk-3-dev libgtk-4-dev
+          python3 -m venv /opt/mesonenv
+          /opt/mesonenv/bin/pip install --quiet --upgrade pip meson
+          echo "/opt/mesonenv/bin" >> "$GITHUB_PATH"
+
+      - name: Install Rust
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/.cargo/bin:$PATH"
+          rustup default stable
+
       - uses: actions/checkout@v4
-      - uses: cachix/install-nix-action@v18
-        with:
-          github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build
         run: |
-          nix develop -c meson setup build \
+          meson setup build \
             -Dgtk3=enabled -Dgtk4=enabled -Dqt5=disabled -Dqt6=disabled
-          nix develop -c ninja -C build
+          ninja -C build
 
       - name: Strip
         run: |
@@ -44,9 +64,7 @@ jobs:
 
       - name: Create archive
         run: |
-          # run inside nix develop so the cargo rebuild (build_always_stale)
-          # uses nix's rust, not the runner's rustup (which races on rust-src)
-          DESTDIR=$(pwd)/kime-install nix develop -c ninja -C build install
+          DESTDIR=$(pwd)/kime-install ninja -C build install
           tar -C kime-install -caf kime-${{ github.ref_name }}.tar.zst .
 
       - name: Upload release
